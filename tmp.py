@@ -16,13 +16,13 @@ def get_file(path):
 def import_stock(cur):
     print("---------------importing stock---------------")
     names = pd.read_csv("./stock-data/symbol-name.csv")
-    for f in get_file("./stock-data/Data/"):
-        symbol = f.strip().split("/")[-1].split(".")[0]
-        name = names[names['Symbol'] == symbol]['Name'].values[0]
+    for i, row in names.iterrows():
+        symbol = row['Symbol']
+        name = row['Name']
 
-        sql = """INSERT INTO stocks(sid, name) VALUES (%s, %s)""" % (symbol, name)
+        sql = """INSERT INTO stocks(sid, name) VALUES ('%s', '%s')""" % (symbol, name)
         cur.excute(sql)
-
+        cur.commit()
 
 def import_stock_history(cur):
     print("---------------importing stock history price---------------")
@@ -32,8 +32,9 @@ def import_stock_history(cur):
 
         spid = 0
         for index, row in data.iterrows():
-            sql = """INSERT INTO stocks_history(spid, time, price, sid) VALUES (%s, %s, %s, %s)""" % (symbol + spid, row['Date'], row['Close'], symbol)
-            cur.excute(sql)
+            sql = """INSERT INTO stocks_history(spid, time, price, sid) VALUES ('%s', '%s', %s, '%s')""" % (symbol + str(spid), row['Date'], row['Close'], symbol)
+            cur.execute(sql)
+            cur.commit()
             spid += 1
 
 
