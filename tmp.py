@@ -17,24 +17,29 @@ def import_stock(cur):
     print("---------------importing stock---------------")
     names = pd.read_csv("./stock-data/symbol-name.csv")
     for f in get_file("./stock-data/Data/"):
+        
         symbol = f.strip().split("/")[-1].split(".")[0]
-        name = names[names['Symbol'] == symbol]['Name'].values[0]
-
-        sql = """INSERT INTO stocks(sid, name) VALUES (%s, %s)""" % (symbol, name)
-        cur.excute(sql)
+        name = names[names['Symbol'] == symbol]['Name'].values
+        if len(name) == 0:
+            continue
+        else:
+            name = name[0]
+            sql = """INSERT INTO stocks(sid, name) VALUES ('%s', '%s')""" % (symbol, name)
+            cur.execute(sql)
 
 
 def import_stock_history(cur):
     print("---------------importing stock history price---------------")
+    names = set(pd.read_csv("./stock-data/symbol-name.csv")['Symbol'].values)
     for f in get_file("./stock-data/Data/"):
         symbol = f.strip().split("/")[-1].split(".")[0]
         data = pd.read_csv(f)
-
-        spid = 0
-        for index, row in data.iterrows():
-            sql = """INSERT INTO stocks_history(spid, time, price, sid) VALUES (%s, %s, %s, %s)""" % (symbol + spid, row['Date'], row['Close'], symbol)
-            cur.excute(sql)
-            spid += 1
+        if symbol in names:
+            spid = 0
+            for index, row in data.iterrows():
+                sql = """INSERT INTO stock_history(spid, time, price, sid) VALUES ('%s', '%s', %s, '%s')""" % (symbol + str(spid), row['Date'], row['Close'], symbol)
+                cur.execute(sql)
+                spid += 1
 
 
 def get_symbol_list():
@@ -64,12 +69,12 @@ def make_symbol_name_mapping():
 
 
 def import_stock_data():
-    conn = db.connect(name = "", usr = "", host = "", pwd = "")
+    conn = db.connect(name = "proj1part2", usr = "yl4323", host = "35.243.220.243", pwd = "2262")
     if conn is None:
         exit(1)
     else:
         cur = conn.cursor()
-        import_stock(cur)
+        # import_stock(cur)
 
         import_stock_history(cur)
 
