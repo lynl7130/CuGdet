@@ -417,7 +417,7 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 		sids = pd.read_csv("./stock-data/symbol-name.csv")['Symbol']
 		res = {'Aid': [], 'Sid': [], 'Price': [], 'Num': []}
 		for aid in aids:
-			s_list = sids.sample(random.randint(10)).values
+			s_list = sids.sample(random.randint(1, 10)).values
 			for s in s_list:
 				res['Aid'].append(aid)
 				res['Sid'].append(s)
@@ -454,8 +454,8 @@ cur.execute("DELETE FROM defaults;")
 cur.execute("DELETE FROM plans;")
 cur.execute("DELETE FROM honors;")
 cur.execute("DELETE FROM account;")"""
-cur.execute("DELETE FROM rec_stock;")
-cur.execute("DELETE FROM own_stock;")
+cur.execute("DELETE FROM rec_stk;")
+cur.execute("DELETE FROM own_stk;")
 # copy csv to db
 """cur.copy_from(open('account.csv', 'r'), 'account', sep=',', null='')
 cur.copy_from(open('honors.csv', 'r'), 'honors', sep=',', null='')
@@ -467,8 +467,8 @@ cur.copy_from(open('logs.csv', 'r'), 'logs', sep=',', null='')
 cur.copy_from(open('friend.csv', 'r'), 'friend', sep=',', null='')
 cur.copy_from(open('in_race.csv', 'r'), 'in_race', sep=',', null='')
 cur.copy_from(open('win_honor.csv', 'r'), 'win_honor', sep=',', null='')"""
-cur.copy_from(open('rec_stock.csv', 'r'), 'rec_stock', sep=',', null='')
-cur.copy_from(open('own_stock.csv', 'r'), 'own_stock', sep=',', null='')
+cur.copy_from(open('rec_stock.csv', 'r'), 'rec_stk', sep=',', null='')
+cur.copy_from(open('own_stock.csv', 'r'), 'own_stk', sep=',', null='')
 
 
 
