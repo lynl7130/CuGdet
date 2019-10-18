@@ -24,6 +24,7 @@ def import_stock(cur):
         cur.execute(sql)
 
 
+
 def import_stock_history(cur):
     print("---------------importing stock history price---------------")
     valid_symbol = set(pd.read_csv("./stock-data/symbol-name.csv")['Symbol'].values)
@@ -83,6 +84,18 @@ def import_stock_data():
         conn.commit()
 
 
+def check_data():
+    valid_symbols = set(pd.read_csv("./stock-data/symbol-name.csv")['Symbol'].values)
+    for f in get_file("./stock-data/Data/"):
+        symbol = f.strip().split("/")[-1].split(".")[0]
+        if symbol in valid_symbols:
+            cnt = open(f, 'r').read()
+            if len(cnt) == 0:
+                continue
+            else:
+                data = pd.read_csv(f)
+            
+
 if __name__ == '__main__':
-    import_stock_data()
+    check_data()
 
