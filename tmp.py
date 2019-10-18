@@ -24,7 +24,6 @@ def import_stock(cur):
         cur.execute(sql)
 
 
-
 def import_stock_history(cur):
     print("---------------importing stock history price---------------")
     valid_symbol = set(pd.read_csv("./stock-data/symbol-name.csv")['Symbol'].values)
@@ -43,6 +42,14 @@ def import_stock_history(cur):
                 sql = """INSERT INTO stock_history(spid, time, price, sid) VALUES ('%s', '%s', %s, '%s')""" % (symbol + str(spid), row['Date'], row['Close'], symbol)
                 cur.execute(sql)
                 spid += 1
+
+
+def import_rec_stock(cur):
+    print("---------------importing stock history price---------------")
+    data = pd.read_csv("./rec_stock.csv")
+    for i, row in data.iterrows():
+        sql = """INSERT INTO rec_stk(aid, sid) VALUES ('%s', '%s')""" % (row['Aid'], row['Sid'])
+        cur.execute(sql)
 
 
 def get_symbol_list():
@@ -97,5 +104,11 @@ def check_data():
             
 
 if __name__ == '__main__':
-    check_data()
+    conn = db.connect(name = "proj1part2", usr = "yl4323", host = "35.243.220.243", pwd = "2262")
+    if conn is None:
+        exit(1)
+    else:
+        cur = conn.cursor()
+        import_rec_stock(cur)
+        conn.commit()
 
