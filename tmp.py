@@ -16,25 +16,27 @@ def get_file(path):
 def import_stock(cur):
     print("---------------importing stock---------------")
     names = pd.read_csv("./stock-data/symbol-name.csv")
-    for f in get_file("./stock-data/Data/"):
-        
-        symbol = f.strip().split("/")[-1].split(".")[0]
-        name = names[names['Symbol'] == symbol]['Name'].values
-        if len(name) == 0:
-            continue
-        else:
-            name = name[0]
-            sql = """INSERT INTO stocks(sid, name) VALUES ('%s', '%s')""" % (symbol, name)
-            cur.execute(sql)
+    for i, row in names.iterrows():
+        symbol = row['Symbol']
+        name = row['Name']
+
+        sql = """INSERT INTO stocks(sid, name) VALUES ('%s', '%s')""" % (symbol, name)
+        cur.execute(sql)
 
 
 def import_stock_history(cur):
     print("---------------importing stock history price---------------")
-    names = set(pd.read_csv("./stock-data/symbol-name.csv")['Symbol'].values)
+    valid_symbol = set(pd.read_csv("./stock-data/symbol-name.csv")['Symbol'].values)
     for f in get_file("./stock-data/Data/"):
         symbol = f.strip().split("/")[-1].split(".")[0]
-        data = pd.read_csv(f)
-        if symbol in names:
+        
+        cnt = open(f, 'r').read()
+        if len(cnt) == 0:
+            continue
+        else:
+            data = pd.read_csv(f)
+        
+        if symbol in valid_symbol:
             spid = 0
             for index, row in data.iterrows():
                 sql = """INSERT INTO stock_history(spid, time, price, sid) VALUES ('%s', '%s', %s, '%s')""" % (symbol + str(spid), row['Date'], row['Close'], symbol)
@@ -75,8 +77,10 @@ def import_stock_data():
     else:
         cur = conn.cursor()
         # import_stock(cur)
+        # conn.commit()
 
         import_stock_history(cur)
+        conn.commit()
 
 
 if __name__ == '__main__':
