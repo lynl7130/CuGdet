@@ -4,12 +4,13 @@ import os
 import random
 import string
 import datetime
-import pandas as pd
-import random
-from names import *
 
+# pip install names
+from names import *
+import pandas as pd
 import psycopg2
 
+from tqdm import tqdm
 
 def get_time():
 	start_year = random.choice(years)
@@ -48,12 +49,15 @@ banks = ['Alipay', 'CreditCard', 'Check', 'Cash', 'Venmo', 'Paypal', 'ApplePay',
 cmpr = ['leq', 'beq']
 tstep = ['week', 'month', 'quarter', 'half-year', 'year']
 
+# read in stock symbol
+sids = pd.read_csv("./data/symbol-name.csv")['Symbol'].values
+
 # generate data in csv for a particular table
 # table: which table to generate(table names)
 # num: how many tuples in this table
 # fk_1: foreign key list 1
 # fk_2: foreign key list 2
-def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
+def generate_csv(table, num, fk_1=[], fk_2=[]):
 	
 	# account.csv
 	# aid: fixed-length 10, lowercase + number
@@ -63,9 +67,11 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 	if table == 'account':
 		# not allowed to repeat
 		aids = []
-		with open(table + ".csv", "w") as f:
+		names = []
+		emails = []
+		with open("./data/%s.csv" % table, "w") as f:
 			writer = csv.writer(f, delimiter=',')
-			for j in range(num):
+			for j in tqdm(range(num)):
 				# aid
 				while True:
 					aid = ''.join(random.choice(letters+numbers) for j in range(10))
@@ -75,12 +81,14 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 				# name
 				while True:
 					name = get_first_name()
-					if len(name) <= 20:
+					if name not in names and len(name) <= 20:
+						names.append(name)
 						break
 				# email
 				while True:
 					email = '@'.join([''.join([random.choice(letters+numbers) for  k in range(random.choice(range(1, 21)))]), random.choice(email_exts)])
-					if len(email) <= 20:
+					if email not in emails and len(email) <= 20:
+						emails.append(email)
 						break
 				# pwd
 				pwd = ''.join(random.choice(letters+numbers) for p in range(random.choice(range(1, 21))))
@@ -102,9 +110,10 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 	elif table == 'honors':
 		# not allowed to repeat
 		hids = []
-		with open(table + '.csv', "w") as f:
+		names = []
+		with open("./data/%s.csv" % table, "w") as f:
 			writer = csv.writer(f, delimiter=',')
-			for j in range(num):
+			for j in tqdm(range(num)):
 				# hid
 				while True:
 					hid = ''.join(random.choice(letters+numbers) for j in range(10))
@@ -117,8 +126,9 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 					type_ = random.choice(cmpr)
 					tag = random.choice(tags)
 					amt = (100 + 100 * random.randrange(100))
-					name = '-'.join([tag if tag is not None else '', type_, str(amt)])
-					if len(name) <= 20:
+					name = '-'.join([tag if tag is not None else '_', type_, str(amt)])
+					if name not in names and len(name) <= 20:
+						names.append(name)
 						break
 				amt = float(amt)
 					
@@ -137,10 +147,12 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 				if p > 0.5:
 					writer.writerow([hid, name, type_, tag, amt, starting, ending])
 				else:
+					names = names[:-1]
 					while True:
 					    type_ = 'leq' if (p > 0.3) else 'beq'
-					    name = '-'.join([tag if tag is not None else '', type_, str(amt)])
-					    if len(name) <= 20:
+					    name = '-'.join([tag if tag is not None else '_', type_, str(amt)])
+					    if name not in names and len(name) <= 20:
+					    	names.append(name)
 					    	break
 	
 					if p > 0.3:
@@ -162,9 +174,9 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 	# aid: pick from foreign key list fk_1
 	elif table == 'plans':
 		pids = []
-		with open(table + '.csv', "w") as f:
+		with open("./data/%s.csv" % table, "w") as f:
 			writer = csv.writer(f, delimiter=',')
-			for j in range(num):
+			for j in tqdm(range(num)):
 				# pid
 				while True:
 					pid = ''.join(random.choice(letters+numbers) for j in range(10))
@@ -210,9 +222,10 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 	# aid: fk_1
 	elif table == 'defaults':
 		dids = []
-		with open(table + '.csv', "w") as f:
+		did_names = []
+		with open("./data/%s.csv" % table, "w") as f:
 			writer = csv.writer(f, delimiter=',')
-			for j in range(num):
+			for j in tqdm(range(num)):
 				# did
 				while True:
 					did = ''.join(random.choice(letters+numbers) for j in range(10))
@@ -220,15 +233,17 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 						dids.append(did)
 						break
 				# be_from, be_to, amt, tag, name
-				amt = float(100 + 100 * random.randrange(100)) - 5000.
-				be_from = random.choice([None] + banks)
-				be_to = random.choice([None] + sources)
-				if amt <= 0:
-					be_from, be_to = be_to, be_from
-				tag = random.choice([None] + tags)
-				name = '-'.join([tag if tag is not None else '', be_from if be_from is not None else '', be_to if be_to is not None else '', str(int(amt))])
-				if len(name) > 20 or random.random() < 0.3:
-					name = None
+				while True:
+					amt = float(100 + 100 * random.randrange(100)) - 5000.
+					be_from = random.choice([None] + banks)
+					be_to = random.choice([None] + sources)
+					if amt <= 0:
+						be_from, be_to = be_to, be_from
+					tag = random.choice([None] + tags)
+					name = '-'.join([tag if tag is not None else '_', be_from if be_from is not None else '_', be_to if be_to is not None else '_', str(int(amt))])
+					if len(name) <= 20 and (did, name) not in did_names:
+						did_names.append((did, name))
+						break
 					
 				# starting & ending
 				while True:
@@ -261,9 +276,9 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 
 	elif table == 'records':
 		reids = []
-		with open(table + '.csv', "w") as f:
+		with open("./data/%s.csv" % table, "w") as f:
 			writer = csv.writer(f, delimiter=',')
-			for j in range(num):
+			for j in tqdm(range(num)):
 				# reid
 				while True:
 					reid = ''.join(random.choice(letters+numbers) for j in range(10))
@@ -277,7 +292,7 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 				if amt <= 0:
 					be_from, be_to = be_to, be_from
 				tag = random.choice([None] + tags)
-				name = '-'.join([tag if tag is not None else '', be_from if be_from is not None else '', be_to if be_to is not None else '', str(int(amt))])
+				name = '-'.join([tag if tag is not None else '_', be_from if be_from is not None else '_', be_to if be_to is not None else '_', str(int(amt))])
 				if len(name) > 20 or random.random() < 0.3:
 					name = None
 						
@@ -298,42 +313,46 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 		return reids
 	elif table == 'races':
 		rids = []
-		with open(table + '.csv', "w") as f:
+		names = []
+		with open("./data/%s.csv" % table, "w") as f:
 			writer = csv.writer(f, delimiter=',')
-			for j in range(num):
+			for j in tqdm(range(num)):
 				# rid
 				while True:
 					rid = ''.join(random.choice(letters+numbers) for j in range(10))
 					if rid not in rids:
 						rids.append(rid)
 						break
-				# type_, tag, name
-				type_ = random.choice(cmpr)
-				tag = random.choice([None] + tags)			
-				name = '-'.join([tag if tag is not None else '', type_])
-				if len(name) > 20 or random.random() < 0.3:
-					name = None
-						
-				# starting & ending
-				while True:
-					starting = get_time()
-					ending = get_time()
-					if starting < ending:
-						break
-				starting = starting.strftime('%Y-%m-%d %H:%M:%S') 
-				ending = ending.strftime('%Y-%m-%d %H:%M:%S')
 				
-				if random.random() < 0.4:
-					ending = None
+				# starting & ending
+				# type_, tag, name
+				while True:
+					while True:
+						starting = get_time()
+						ending = get_time()
+						if starting < ending:
+							break
+					starting = starting.strftime('%Y-%m-%d %H:%M:%S') 
+					ending = ending.strftime('%Y-%m-%d %H:%M:%S')
+					if random.random() < 0.4:
+						ending = None
+					type_ = random.choice(cmpr)
+					tag = random.choice([None] + tags)			
+					name = '-'.join([tag if tag is not None else '_', type_] + starting.split('-')[:2])
+					
+					if len(name) <=20 and name not in names:
+						names.append(name)
+						break
+						
 
 				writer.writerow([rid, name, type_, starting, ending, tag])
 			   		
 		return rids 		   
 	elif table == 'logs':
 		lid_aids = []
-		with open(table + '.csv', 'w') as f:
+		with open("./data/%s.csv" % table, 'w') as f:
 			writer = csv.writer(f, delimiter=',')
-			for j in range(num):
+			for j in tqdm(range(num)):
 				# lid, aid
 				while True:
 					lid = ''.join(random.choice(letters+numbers) for j in range(10))
@@ -361,23 +380,23 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 
 	elif table == 'friend':
 		aidss = []
-		with open(table + '.csv', 'w') as f:
+		with open("./data/%s.csv" % table, 'w') as f:
 			writer = csv.writer(f, delimiter=',')
-			for j in range(num):
+			for j in tqdm(range(num)):
 				# aid_1, aid_2
 				while True:
 					aid_1 = random.choice(fk_1)
 					aid_2 = random.choice(fk_2)
-					if (aid_1 != aid_2) and (aid_1, aid_2) not in aidss:
+					if (aid_1 != aid_2) and (aid_1, aid_2) not in aidss and (aid_2, aid_1) not in aidss:
 						aidss.append((aid_1, aid_2))
 						break
 				writer.writerow([aid_1, aid_2])
 		return aidss
 	elif table == 'in_race':
 		aidss_rids = []
-		with open(table + '.csv', 'w') as f:
+		with open("./data/%s.csv" % table, 'w') as f:
 			writer = csv.writer(f, delimiter=',')
-			for j in range(num):
+			for j in tqdm(range(num)):
 				# (aid_1, aid_2), rid
 				while True:
 					aid_1, aid_2 = random.choice(fk_1)
@@ -389,7 +408,7 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 		return aidss_rids
 	elif table == 'win_honor':
 		aid_hids = []
-		with open(table + '.csv', 'w') as f:
+		with open("./data/%s.csv" % table, 'w') as f:
 			writer = csv.writer(f, delimiter=',')
 			for j in range(num):
 				# (aid_1, aid_2), rid
@@ -401,50 +420,66 @@ def generate_csv(table, num = 0, fk_1=[], fk_2=[]):
 						break
 				writer.writerow([aid, hid])
 		return aid_hids
-	elif table == 'rec_stock':
-		aids = pd.read_csv("./stock-data/rec_stock.csv")['Aid'].values
-		sids = pd.read_csv("./stock-data/symbol-name.csv")['Symbol']
-		res = {'Aid': [], 'Sid': []}
-		for aid in aids:
-			s_list = sids.sample(10).values
-			for s in s_list:
-				res['Aid'].append(aid)
-				res['Sid'].append(s)
-		res = pd.DataFrame(res)
-		res.to_csv("./rec_stock.csv", index = False, header = 0)
-	elif table == 'own_stock':
-		aids = pd.read_csv("./stock-data/own_stock.csv")['Aid'].values
-		sids = pd.read_csv("./stock-data/symbol-name.csv")['Symbol']
-		res = {'Aid': [], 'Sid': [], 'Price': [], 'Num': []}
-		for aid in aids:
-			s_list = sids.sample(random.randint(1, 10)).values
-			for s in s_list:
-				res['Aid'].append(aid)
-				res['Sid'].append(s)
-				res['Price'].append(random.randint(10000, 200000) / 100.0)
-				res['Num'].append(random.randint(50, 200))
-		res = pd.DataFrame(res)
-		res.to_csv("./own_stock.csv", index = False, header = 0)
+	elif table == 'rec_stk':
+		aid_sids = []
+		with open("./data/%s.csv" % table, 'w') as f:
+			writer = csv.writer(f, delimiter = ',')
+			for j in range(num):
+				while True:
+					aid = random.choice(fk_1)
+					sid = random.choice(fk_2)
+					if (aid, sid) not in aid_sids:
+						aid_sids.append((aid, sid))
+						break
+				writer.writerow([aid, sid])
+		return aid_sids
+	elif table == 'own_stk':
+		aid_sids = []
+		with open("./data/%s.csv" % table, 'w') as f:
+			writer = csv.writer(f, delimiter = ',')
+			for j in range(num):
+				while True:
+					aid = random.choice(fk_1)
+					sid = random.choice(fk_2)
+					if (aid, sid) not in aid_sids:
+						aid_sids.append((aid, sid))
+						break
+				writer.writerow([aid, sid, random.randint(10000, 200000) / 100, random.randint(50, 200)])
+		return aid_sids
 	else:
 		assert False, "Table " + table + " does not exists!"
-
+ 
 # generate data
-"""aids = generate_csv('account', 30)
-hids = generate_csv('honors', 30)
-pids = generate_csv('plans', 30, aids)
-dids = generate_csv('defaults', 30, aids)
-reids = generate_csv('records', 30, aids)
-rids = generate_csv('races', 30)
-lid_aids = generate_csv('logs', 30, aids)
-aidss = generate_csv('friend', 30, aids, aids)
-aidss_rids = generate_csv('in_race', 30, aidss, rids)
-aid_hids = generate_csv('win_honor', 30, aids, hids)"""
-generate_csv('rec_stock')
-generate_csv('own_stock')
+print("generating account.csv")
+aids = generate_csv('account', 1000)
+print("generating honors.csv")
+hids = generate_csv('honors', 100)
+print("generating plans.csv")
+pids = generate_csv('plans', 1000, aids)
+print("generating defaults.csv")
+dids = generate_csv('defaults', 500, aids)
+print("generating records.csv")
+reids = generate_csv('records', 10000, aids)
+print("generating races.csv")
+rids = generate_csv('races', 100)
+print("generating logs.csv")
+lid_aids = generate_csv('logs', 100000, aids)
+print("generating friend.csv")
+aidss = generate_csv('friend', 1000, aids, aids)
+print("generating in_race.csv")
+aidss_rids = generate_csv('in_race', 2000, aidss, rids)
+print("generating win_honor.csv")
+aid_hids = generate_csv('win_honor', 10000, aids, hids)
+print("generating rec_stk.csv")
+aid_sids = generate_csv('rec_stk', 1000, aids, sids)
+print("generating own_stk.csv")
+aid_sids = generate_csv('own_stk', 1000, aids, sids)
 
-
+print("clearing tables")
 # clear all the tables in server
-"""cur.execute("DELETE FROM win_honor;")
+cur.execute("DELETE FROM rec_stk;")
+cur.execute("DELETE FROM own_stk;")
+cur.execute("DELETE FROM win_honor;")
 cur.execute("DELETE FROM in_race;")
 cur.execute("DELETE FROM friend;")
 cur.execute("DELETE FROM logs;")
@@ -453,23 +488,23 @@ cur.execute("DELETE FROM records;")
 cur.execute("DELETE FROM defaults;")
 cur.execute("DELETE FROM plans;")
 cur.execute("DELETE FROM honors;")
-cur.execute("DELETE FROM account;")"""
-cur.execute("DELETE FROM rec_stk;")
-cur.execute("DELETE FROM own_stk;")
-# copy csv to db
-"""cur.copy_from(open('account.csv', 'r'), 'account', sep=',', null='')
-cur.copy_from(open('honors.csv', 'r'), 'honors', sep=',', null='')
-cur.copy_from(open('plans.csv', 'r'), 'plans', sep=',', null='')
-cur.copy_from(open('defaults.csv', 'r'), 'defaults', sep=',', null='')
-cur.copy_from(open('records.csv', 'r'), 'records', sep=',', null='')
-cur.copy_from(open('races.csv', 'r'), 'races', sep=',', null='')
-cur.copy_from(open('logs.csv', 'r'), 'logs', sep=',', null='')
-cur.copy_from(open('friend.csv', 'r'), 'friend', sep=',', null='')
-cur.copy_from(open('in_race.csv', 'r'), 'in_race', sep=',', null='')
-cur.copy_from(open('win_honor.csv', 'r'), 'win_honor', sep=',', null='')"""
-cur.copy_from(open('rec_stock.csv', 'r'), 'rec_stk', sep=',', null='')
-cur.copy_from(open('own_stock.csv', 'r'), 'own_stk', sep=',', null='')
+cur.execute("DELETE FROM account;")
 
+print("copying csv to tables")
+# copy csv to db
+cur.copy_from(open('./data/account.csv', 'r'), 'account', sep=',', null='')
+cur.copy_from(open('./data/honors.csv', 'r'), 'honors', sep=',', null='')
+cur.copy_from(open('./data/plans.csv', 'r'), 'plans', sep=',', null='')
+cur.copy_from(open('./data/defaults.csv', 'r'), 'defaults', sep=',', null='')
+cur.copy_from(open('./data/records.csv', 'r'), 'records', sep=',', null='')
+cur.copy_from(open('./data/races.csv', 'r'), 'races', sep=',', null='')
+cur.copy_from(open('./data/logs.csv', 'r'), 'logs', sep=',', null='')
+cur.copy_from(open('./data/friend.csv', 'r'), 'friend', sep=',', null='')
+cur.copy_from(open('./data/in_race.csv', 'r'), 'in_race', sep=',', null='')
+cur.copy_from(open('./data/win_honor.csv', 'r'), 'win_honor', sep=',', null='')
+cur.copy_from(open('./data/rec_stk.csv', 'r'), 'rec_stk', sep=',', null='')
+cur.copy_from(open('./data/own_stk.csv', 'r'), 'own_stk', sep=',', null='')
+print("done!")
 
 
 conn.commit()
