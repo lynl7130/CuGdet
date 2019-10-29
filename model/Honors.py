@@ -1,4 +1,7 @@
-class Honors:
+import model.BaseEntity
+
+
+class Honors(model.BaseEntity):
     def __init__(self, data):
         self.hid = data['hid']
         self.name = data['name']

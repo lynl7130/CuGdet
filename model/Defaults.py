@@ -1,4 +1,7 @@
-class Defaults:
+import model.BaseEntity
+
+
+class Defaults(model.BaseEntity):
     def __init__(self, data):
         self.did = data['did']
         self.name = data['name']

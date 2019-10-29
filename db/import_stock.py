@@ -1,5 +1,5 @@
 import os
-import db
+from db import db
 import pandas as pd
 
 

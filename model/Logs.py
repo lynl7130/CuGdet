@@ -1,4 +1,8 @@
-class Logs:
+import model.BaseEntity
+
+
+class Logs(model.BaseEntity):
+
     def __init__(self, data):
         self.lid = data['lid']
         self.if_log_in = data['if_log_in']

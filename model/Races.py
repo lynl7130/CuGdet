@@ -1,4 +1,7 @@
-class Races:
+import model.BaseEntity
+
+
+class Races(model.BaseEntity):
     def __init__(self, data):
         self.rid = data['rid']
         self.name = data['name']

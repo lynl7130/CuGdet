@@ -1,4 +1,9 @@
-class Account:
+import model.BaseEntity
+
+
+class Account(model.BaseEntity):
+    table = "account"
+
     def __init__(self, data):
         self.aid = data['aid']
         self.name = data['name']
