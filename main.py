@@ -19,12 +19,13 @@ def index():
     return render_template('SignIn.html')
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/signin', methods=['GET', 'POST'])
 def login():
     username = request.form.get("username")
     password = request.form.get("password")
-    res = Account.select(conn, "name = %s" % username)
-    if len(res) == 1 and res[0].pwd == password:
+    res = Account.select(conn, "name = '%s'" % username)
+    print(res)
+    if len(res) == 1 and res[0]['pwd'] == password:
         return render_template('HomePage.html', username = username)
     else:
         return render_template('SignIn.html', msg = "error user name or password")
@@ -44,10 +45,5 @@ def sign_up():
     return render_template('HomePage.html', username = username, password = password)
 
 
-def tmp():
-    Account.tmp()
-
-
 if __name__ == '__main__':
-    tmp()
-    # app.run(debug = True, port = 8080)
+    app.run(debug = True, port = 8080)
