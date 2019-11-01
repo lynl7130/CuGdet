@@ -1,8 +1,8 @@
-import model.BaseEntity
+from model.BaseEntity import BaseEntity
 
 
-class InRace(model.BaseEntity):
-    table = "inrace"
+class InRace(BaseEntity):
+    table = "in_race"
 
     def __init__(self, data):
         self.aid1 = data['aid1']

@@ -1,7 +1,9 @@
-import model.BaseEntity
+from model.BaseEntity import BaseEntity
 
 
-class Honors(model.BaseEntity):
+class Honors(BaseEntity):
+    table = "honors"
+
     def __init__(self, data):
         self.hid = data['hid']
         self.name = data['name']

@@ -1,7 +1,9 @@
-import model.BaseEntity
+from model.BaseEntity import BaseEntity
 
 
-class Stocks(model.BaseEntity):
+class Stocks(BaseEntity):
+    table = "stocks"
+
     def __init__(self, data):
         self.sid = data['sid']
         self.name = data['name']

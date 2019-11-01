@@ -1,7 +1,9 @@
-import model.BaseEntity
+from model.BaseEntity import BaseEntity
 
 
-class Records(model.BaseEntity):
+class Records(BaseEntity):
+    table = "records"
+
     def __init__(self, data):
         self.reid = data['reid']
         self.name = data['name']

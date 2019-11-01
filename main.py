@@ -4,11 +4,14 @@ from datetime import timedelta
 
 
 from db import db
+from model import *
+from model.Account import Account
+from model.BaseEntity import BaseEntity
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
-conn, cur = db.connect(name = "proj1part2", usr = "yl4323", host = "35.243.220.243", pwd = "2262")
+conn = db.connect(name = "proj1part2", usr = "yl4323", host = "35.243.220.243", pwd = "2262")
 
 
 @app.route('/')
@@ -20,9 +23,11 @@ def index():
 def login():
     username = request.form.get("username")
     password = request.form.get("password")
-    res = db.select(cur, "account", "name = %s" % username)
-    if len(res) == 1 and res[0][3] == password:
+    res = Account.select(conn, "name = %s" % username)
+    if len(res) == 1 and res[0].pwd == password:
         return render_template('HomePage.html', username = username)
+    else:
+        return render_template('SignIn.html', msg = "error user name or password")
 
 
 @app.route('/tosignup', methods=['GET', 'POST'])
@@ -33,13 +38,16 @@ def to_sign_up():
 @app.route('/signup', methods=['GET', 'POST'])
 def sign_up():
     username = request.form.get("username")
-    print(username)
     password = request.form.get("password")
-    print(password)
     email = request.form.get("email")
-    print(email)
+    Account.insert(conn, {})
     return render_template('HomePage.html', username = username, password = password)
 
 
+def tmp():
+    Account.tmp()
+
+
 if __name__ == '__main__':
-    app.run(debug = True, port = 8080)
+    tmp()
+    # app.run(debug = True, port = 8080)

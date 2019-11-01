@@ -1,7 +1,9 @@
-import model.BaseEntity
+from model.BaseEntity import BaseEntity
 
 
-class RecStk(model.BaseEntity):
+class RecStk(BaseEntity):
+    table = "rec_stk"
+
     def __init__(self, data):
         self.aid = data['aid']
         self.sid = data['sid']

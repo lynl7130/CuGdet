@@ -1,7 +1,8 @@
-import model.BaseEntity
+from model.BaseEntity import BaseEntity
 
 
-class Logs(model.BaseEntity):
+class Logs(BaseEntity):
+    table = "logs"
 
     def __init__(self, data):
         self.lid = data['lid']
