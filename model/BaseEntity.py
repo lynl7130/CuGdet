@@ -1,4 +1,3 @@
-import psycopg2
 from psycopg2.extras import RealDictCursor
 
 
@@ -7,10 +6,11 @@ class BaseEntity(object):
     @classmethod
     def select(cls, conn, condition):
         cur = conn.cursor(cursor_factory = RealDictCursor)
-        # cur = conn.cursor()
         sql = """SELECT * FROM %s WHERE %s;""" % (cls.table, condition)
         cur.execute(sql)
-        conn.commit()
+        res = cur.fetchall()
+        return res
+
 
     @classmethod
     def insert(cls, conn, value):
