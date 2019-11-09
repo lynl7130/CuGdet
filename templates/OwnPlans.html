@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home Page</title>
+    <title>Owned Plans</title>
     <!-- 新 Bootstrap 核心 CSS 文件 -->
 	<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
 	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
@@ -25,6 +25,7 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home Page</a></li>
             <li><a href="#">Statistic</a></li>
+            <li><a href="#">Stocks</a></li>
             <li><a href="#">Society</a></li>
           </ul>
         </div>
@@ -35,42 +36,43 @@
     </div>
     <div class="container">
         <div class="col-lg-8">
-            <form action="/adding_record" method="post">
-                Adding a new record
+            <form action="/adding_plan" method="post">
+                Adding a new plan
                 <button type="submit">Add</button>
             </form>
         </div>
         <div class="col-lg-8">
-            {% for record in records%}
+            {% for plan in plans%}
             <table class="table">
               <tbody>
                 <tr>
-                  <td>Name</td>
-                  <td>{{record['name']}}</td>
+                  <td>Start at</td>
+                  <td>{{plan['starting']}}</td>
                 </tr>
                 <tr>
-                  <td>Source</td>
-                  <td>{{record['be_from']}}</td>
+                  <td>End at</td>
+                  <td>{{plan['ending']}}</td>
                 </tr>
                 <tr>
-                  <td>Receiver</td>
-                  <td>{{record['be_to']}}</td>
+                  <td>Cycle</td>
+                  <td>{{plan['cycle']}}</td>
                 </tr>
                 <tr>
-                  <td>Amount</td>
-                  <td>{{record['amt']}}</td>
+                  <td>Credit</td>
+                  <td>{{plan['credit']}}</td>
                 </tr>
                 <tr>
-                  <td>Tag</td>
-                  <td>{{record['tag']}}</td>
+                  <td>Budget</td>
+                  <td>{{plan['budget']}}</td>
                 </tr>
                 <tr>
-                  <td>Time</td>
-                  <td>{{record['time']}}</td>
-                </tr>
-                <tr>
-                  <td>Remark</td>
-                  <td>{{record['remark']}}</td>
+                  <td>Delete</td>
+                  <td>
+                      <form action="/delete_plans" method="post">
+                          <input name="pid" type="hidden" value={{plan['pid']}}>
+                          <button id="submit" type="submit">Delete</button>
+                      </form>
+                  </td>
                 </tr>
               </tbody>
             </table>

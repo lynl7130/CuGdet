@@ -27,5 +27,5 @@ class BaseEntity(object):
         conn.commit()
 
     @classmethod
-    def tmp(cls):
+    def update(cls):
         print(cls.table)

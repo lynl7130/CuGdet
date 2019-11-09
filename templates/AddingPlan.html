@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home Page</title>
+    <title>Adding Plans</title>
     <!-- 新 Bootstrap 核心 CSS 文件 -->
 	<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
 	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
@@ -25,6 +25,7 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home Page</a></li>
             <li><a href="#">Statistic</a></li>
+            <li><a href="#">Stocks</a></li>
             <li><a href="#">Society</a></li>
           </ul>
         </div>
@@ -35,46 +36,14 @@
     </div>
     <div class="container">
         <div class="col-lg-8">
-            <form action="/adding_record" method="post">
-                Adding a new record
+            <form action="/add_plan" method="post">
+                Starting from: <input name="starting" type="text"><br>
+                Ending from: <input name="ending" type="text"><br>
+                Cycle: <input name="cycle" type="text"><br>
+                Cycle: <input name="cycle" type="text"><br>
+                Budget: <input name="budget" type="text"><br>
                 <button type="submit">Add</button>
             </form>
-        </div>
-        <div class="col-lg-8">
-            {% for record in records%}
-            <table class="table">
-              <tbody>
-                <tr>
-                  <td>Name</td>
-                  <td>{{record['name']}}</td>
-                </tr>
-                <tr>
-                  <td>Source</td>
-                  <td>{{record['be_from']}}</td>
-                </tr>
-                <tr>
-                  <td>Receiver</td>
-                  <td>{{record['be_to']}}</td>
-                </tr>
-                <tr>
-                  <td>Amount</td>
-                  <td>{{record['amt']}}</td>
-                </tr>
-                <tr>
-                  <td>Tag</td>
-                  <td>{{record['tag']}}</td>
-                </tr>
-                <tr>
-                  <td>Time</td>
-                  <td>{{record['time']}}</td>
-                </tr>
-                <tr>
-                  <td>Remark</td>
-                  <td>{{record['remark']}}</td>
-                </tr>
-              </tbody>
-            </table>
-            {% endfor %}
         </div>
     </div>
 </body>

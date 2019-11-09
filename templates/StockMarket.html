@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home Page</title>
+    <title>Stock Market</title>
     <!-- 新 Bootstrap 核心 CSS 文件 -->
 	<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
 	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
@@ -25,6 +25,7 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home Page</a></li>
             <li><a href="#">Statistic</a></li>
+            <li><a href="#">Stocks</a></li>
             <li><a href="#">Society</a></li>
           </ul>
         </div>
@@ -35,42 +36,31 @@
     </div>
     <div class="container">
         <div class="col-lg-8">
-            <form action="/adding_record" method="post">
-                Adding a new record
-                <button type="submit">Add</button>
-            </form>
-        </div>
-        <div class="col-lg-8">
-            {% for record in records%}
+            {% for stock in all_stocks%}
             <table class="table">
               <tbody>
                 <tr>
+                  <td>Symbol</td>
+                  <td>{{stock['sid']}}</td>
+                </tr>
+                <tr>
                   <td>Name</td>
-                  <td>{{record['name']}}</td>
+                  <td>{{stock['name']}}</td>
                 </tr>
                 <tr>
-                  <td>Source</td>
-                  <td>{{record['be_from']}}</td>
+                  <td>Price</td>
+                  <td>{{stock['price']}}</td>
                 </tr>
                 <tr>
-                  <td>Receiver</td>
-                  <td>{{record['be_to']}}</td>
-                </tr>
-                <tr>
-                  <td>Amount</td>
-                  <td>{{record['amt']}}</td>
-                </tr>
-                <tr>
-                  <td>Tag</td>
-                  <td>{{record['tag']}}</td>
-                </tr>
-                <tr>
-                  <td>Time</td>
-                  <td>{{record['time']}}</td>
-                </tr>
-                <tr>
-                  <td>Remark</td>
-                  <td>{{record['remark']}}</td>
+                  <td>Buy</td>
+                  <td>
+                      <form action="/buy_stock" method="post">
+                          <input name="sid" type="hidden" value={{stock['sid']}}>
+                          <input name="price" type="hidden" value={{stock['price']}}>
+                          number: <input name="num" type="text">
+                          <button id="submit" type="submit">buy</button>
+                      </form>
+                  </td>
                 </tr>
               </tbody>
             </table>
