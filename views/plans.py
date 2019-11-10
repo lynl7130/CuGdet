@@ -3,9 +3,10 @@ import string
 
 from db import db
 from main import app, conn
-from flask import request, redirect, session, url_for, render_template, make_response
+from flask import request, redirect, session, url_for, render_template, make_response, Blueprint
 
 
+plans = Blueprint('plans', __name__)
 letters = [s for s in string.ascii_lowercase]
 numbers = [str(i) for i in range(10)]
 

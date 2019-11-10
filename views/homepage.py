@@ -2,11 +2,12 @@ import random
 import string
 
 from main import app, conn
-from flask import request, redirect, session, url_for, render_template
+from flask import request, redirect, session, url_for, render_template, Blueprint
 
 from db import db
 
 
+homepage = Blueprint('homepage', __name__)
 letters = [s for s in string.ascii_lowercase]
 numbers = [str(i) for i in range(10)]
 
