@@ -14,7 +14,7 @@ numbers = [str(i) for i in range(10)]
 @homepage.route('/all_records', methods=['GET', 'POST'])
 def all_records():
     try:
-        aid = session['aid']
+        aid = request.cookies.get('aid')
     except:
         return redirect(url_for("login.sign_in"))
     records = db.select(conn, {"": ['records']}, "*", {"T1": {'aid': aid}})
