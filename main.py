@@ -2,6 +2,7 @@ from flask import Flask, request, redirect, session, url_for, render_template
 import os
 from datetime import timedelta
 
+from views.defaults import defaults
 from views.homepage import homepage
 from views.login import login
 from views.plans import plans
@@ -18,11 +19,11 @@ app.register_blueprint(login)
 app.register_blueprint(plans)
 app.register_blueprint(stat)
 app.register_blueprint(stocks)
-
+app.register_blueprint(defaults)
 
 @app.route('/')
 def index():
-    return render_template('SignIn.html')
+    return render_template('/login/SignIn.html')
 
 
 if __name__ == '__main__':

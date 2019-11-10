@@ -14,11 +14,11 @@ numbers = [str(i) for i in range(10)]
 @homepage.route('/all_records', methods=['GET', 'POST'])
 def all_records():
     try:
-        aid = request.cookies.get('aid')
+        aid = session['aid']
     except:
-        return redirect("signin")
+        return redirect(url_for("login.sign_in"))
     records = db.select(conn, {"": ['records']}, "*", {"T1": {'aid': aid}})
-    return render_template("HomePage.html", records = records)
+    return render_template("/homepage/HomePage.html", records = records)
 
 
 @homepage.route('/adding_record', methods=['GET', 'POST'])
@@ -27,7 +27,7 @@ def adding_record():
         aid = request.cookies.get('aid')
     except:
         return redirect("signin")
-    return render_template("AddingRecord.html")
+    return render_template("/homepage/AddingRecord.html")
 
 
 @homepage.route('/add_record', methods=['GET', 'POST'])
@@ -53,4 +53,6 @@ def add_record():
         record['reid'] = ''.join(random.choice(letters + numbers) for j in range(10))
 
     db.insert(conn, 'records', record)
-    return redirect('HomePage.html')
+
+    db.update(conn, "plans", {"-": {"credit": record['amt']}}, {"T1": {'aid': aid}})
+    return redirect('/homepage/HomePage.html')

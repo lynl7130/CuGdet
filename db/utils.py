@@ -2,7 +2,7 @@ def condition_to_sql(condition):
     res = []
     for t in condition:
         for k in condition[t]:
-            res.append("%s.%s = '%s'" % (t, k, condition[t][k]))
+            res.append("""%s.%s = '%s'""" % (t, k, condition[t][k]))
     res = " AND ".join(res)
     return res
 
@@ -30,3 +30,15 @@ def columns_to_sql(columns):
             tmp.append("%s.%s" % (t, col))
     res = ", ".join(tmp)
     return res
+
+
+def values_to_sql(values):
+    vals = []
+    for t in values:
+        if t == "=":
+            for k in values[t]:
+                vals.append("T1.%s = '%s'" % (k, values[t][k]))
+        else:
+            for k in values[t]:
+                vals.append("T1.%s = T1.%s %s '%s'" % (k, k, t, values[t][k]))
+    return ", ".join(vals)

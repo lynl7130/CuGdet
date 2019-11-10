@@ -1,7 +1,7 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-from db.utils import condition_to_sql, tables_to_sql, columns_to_sql
+from db.utils import condition_to_sql, tables_to_sql, columns_to_sql, values_to_sql
 
 
 def connect(name, usr, host, pwd):
@@ -16,7 +16,14 @@ def connect(name, usr, host, pwd):
 def select(conn, tables, columns, condition, special = ""):
     cur = conn.cursor(cursor_factory = RealDictCursor)
 
-    sql = """SELECT %s FROM %s WHERE %s %s;""" % (columns_to_sql(columns), tables_to_sql(tables), condition_to_sql(condition), special)
+    cond_sql = condition_to_sql(condition)
+    if cond_sql == "":
+        sql = """SELECT %s FROM %s %s;""" % (
+            columns_to_sql(columns), tables_to_sql(tables), special)
+    else:
+        sql = """SELECT %s FROM %s WHERE %s %s;""" % (
+            columns_to_sql(columns), tables_to_sql(tables), cond_sql, special)
+    print(sql)
     cur.execute(sql)
     return cur.fetchall()
 
@@ -24,46 +31,41 @@ def select(conn, tables, columns, condition, special = ""):
 def insert(conn, table, data):
     cur = conn.cursor(cursor_factory = RealDictCursor)
 
-    cols = ",".join(data.keys())
+    cols = ",".join([t for t in data.keys() if data[t] != ""])
     cols = "(%s)" % cols
-    vals = ", ".join(data.values())
+    vals = ["""'%s'""" % t for t in data.values() if t != ""]
+    vals = ", ".join(vals)
     vals = "(%s)" % vals
 
     sql = "INSERT INTO %s %s VALUES %s;" % (table, cols, vals)
-    try:
-        cur.execute(sql)
-        conn.commit()
-        return True
-    except:
-        return False
+    print(sql)
+    cur.execute(sql)
+    conn.commit()
 
 
 def delete(conn, table, condition):
     cur = conn.cursor(cursor_factory = RealDictCursor)
 
     sql = "DELETE FROM %s WHERE %s;" % (tables_to_sql({"": [table]}), condition_to_sql({"T1": condition}))
-    try:
-        cur.execute(sql)
-        conn.commit()
-        return True
-    except:
-        return False
+    print(sql)
+    cur.execute(sql)
+    conn.commit()
 
 
 def update(conn, table, new_values, condition):
     cur = conn.cursor(cursor_factory = RealDictCursor)
 
-    vals = []
-    for k in new_values:
-        vals += "T1.%s = '%s'" % (k, new_values[k])
-    vals = ", ".join(vals)
+    vals = values_to_sql(new_values)
     sql = "UPDATE %s SET %s WHERE %s;" % (tables_to_sql({"": [table]}), vals, condition_to_sql({"T1": condition}))
-    try:
-        cur.execute(sql)
-        conn.commit()
-        return True
-    except:
-        return False
+    print(sql)
+    cur.execute(sql)
+    conn.commit()
+
+
+def special_select(sql):
+    cur = conn.cursor(cursor_factory = RealDictCursor)
+    cur.execute(sql)
+    return cur.fetchall()
 
 
 conn = connect(name = "proj1part2", usr = "yl4323", host = "35.243.220.243", pwd = "2262")
