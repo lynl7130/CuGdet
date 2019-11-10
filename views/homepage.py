@@ -12,8 +12,8 @@ letters = [s for s in string.ascii_lowercase]
 numbers = [str(i) for i in range(10)]
 
 
-@app.route('/homepage', methods=['GET', 'POST'])
-def homepage():
+@app.route('/all_records', methods=['GET', 'POST'])
+def records():
     try:
         aid = request.cookies.get('aid')
     except:

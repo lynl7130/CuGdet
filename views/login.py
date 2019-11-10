@@ -16,7 +16,7 @@ def login():
     data = {"T1": {'username': request.form.get("username"), 'password': request.form.get("password")}}
     res = db.select(conn, {'': ['Account']}, {"T1": ['aid']}, data)
     if len(res) != 0:
-        response = make_response(url_for('homepage'))
+        response = make_response(url_for('homepage/all_records'))
         response.set_cookie('aid', res[0]['aid'])
         return redirect(response)
     else:
