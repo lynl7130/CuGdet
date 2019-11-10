@@ -1,8 +1,8 @@
 import random
 import string
 
+from db.db import conn
 from db import db
-from main import conn
 from flask import request, redirect, session, url_for, render_template, make_response, Blueprint
 
 

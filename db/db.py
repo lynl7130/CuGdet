@@ -65,3 +65,5 @@ def update(conn, table, new_values, condition):
     except:
         return False
 
+
+conn = connect(name = "proj1part2", usr = "yl4323", host = "35.243.220.243", pwd = "2262")

@@ -8,14 +8,10 @@ from views.plans import plans
 from views.stat import stat
 from views.stocks import stocks
 
-from db import db
-
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
-conn = db.connect(name = "proj1part2", usr = "yl4323", host = "35.243.220.243", pwd = "2262")
-
 
 app.register_blueprint(homepage, url_prefix='/homepage')
 app.register_blueprint(login, url_prefix='/login')
