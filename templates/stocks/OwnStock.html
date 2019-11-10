@@ -20,7 +20,11 @@ Owned Stocks
                 </tr>
                 <tr>
                   <td>Price</td>
-                  <td>{{stock['price']}}</td>
+                  <td>{{stock['old_price']}}</td>
+                </tr>
+                <tr>
+                  <td>Current Price</td>
+                  <td>{{stock['cur_price']}}</td>
                 </tr>
                 <tr>
                   <td>Number</td>
@@ -29,10 +33,12 @@ Owned Stocks
                 <tr>
                   <td>Sell</td>
                   <td>
-                      <form action="/buy_stock" method="post">
+                      <form action="/sell_stock" method="post">
                           <input name="sid" type="hidden" value={{stock['sid']}}>
-                          <input name="price" type="hidden" value={{stock['price']}}>
-                          number: <input name="num" type="text">
+                          <input name="old_price" type="hidden" value={{stock['old_price']}}>
+                          <input name="cur_price" type="hidden" value={{stock['cur_price']}}>
+                          <input name="num" type="hidden" value={{stock['num']}}>
+                          number: <input name="sell_num" type="text">
                           <button id="submit" type="submit">sell</button>
                       </form>
                   </td>

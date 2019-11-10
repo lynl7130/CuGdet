@@ -56,7 +56,11 @@ def update(conn, table, new_values, condition):
     cur = conn.cursor(cursor_factory = RealDictCursor)
 
     vals = values_to_sql(new_values)
-    sql = "UPDATE %s SET %s WHERE %s;" % (tables_to_sql({"": [table]}), vals, condition_to_sql({"T1": condition}))
+    cond = []
+    for k in condition:
+        cond.append("""%s = '%s'""" % (k, condition[k]))
+    cond = " AND ".join(cond)
+    sql = "UPDATE %s SET %s WHERE %s;" % (table, vals, cond)
     print(sql)
     cur.execute(sql)
     conn.commit()

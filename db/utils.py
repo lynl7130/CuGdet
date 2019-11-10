@@ -37,8 +37,8 @@ def values_to_sql(values):
     for t in values:
         if t == "=":
             for k in values[t]:
-                vals.append("T1.%s = '%s'" % (k, values[t][k]))
+                vals.append("%s = '%s'" % (k, values[t][k]))
         else:
             for k in values[t]:
-                vals.append("T1.%s = T1.%s %s '%s'" % (k, k, t, values[t][k]))
+                vals.append("%s = %s %s '%s'" % (k, k, t, values[t][k]))
     return ", ".join(vals)

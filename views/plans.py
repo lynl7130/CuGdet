@@ -14,7 +14,7 @@ numbers = [str(i) for i in range(10)]
 @plans.route('/own_plans', methods=['GET', 'POST'])
 def own_plans():
     try:
-        aid = session['aid']
+        aid = request.cookies.get('aid')
     except:
         return redirect(url_for("login.sign_in"))
     plans = db.select(conn, {"": ['plans']}, "*", {"T1": {'aid': aid}})
@@ -24,7 +24,7 @@ def own_plans():
 @plans.route('/adding_plan', methods=['GET', 'POST'])
 def adding_plan():
     try:
-        aid = session['aid']
+        aid = request.cookies.get('aid')
     except:
         return redirect(url_for("login.sign_in"))
     return render_template("/plans/AddingPlan.html")
@@ -33,7 +33,7 @@ def adding_plan():
 @plans.route('/add_plans', methods=['GET', 'POST'])
 def add_plans():
     try:
-        aid = session['aid']
+        aid = request.cookies.get('aid')
     except:
         return redirect(url_for("login.sign_in"))
     plan = {'aid': aid, 'starting': request.form.get("starting"), 'ending': request.form.get("ending"),
@@ -51,7 +51,7 @@ def add_plans():
 @plans.route('/delete_plans', methods=['GET', 'POST'])
 def delete_plans():
     try:
-        aid = session['aid']
+        aid = request.cookies.get('aid')
     except:
         return redirect(url_for("login.sign_in"))
     db.delete(conn, 'plans', {'pid': request.form.get('pid')})

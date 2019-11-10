@@ -14,7 +14,7 @@ numbers = [str(i) for i in range(10)]
 @defaults.route('/own_defaults', methods=['GET', 'POST'])
 def own_defaults():
     try:
-        aid = session['aid']
+        aid = request.cookies.get('aid')
     except:
         return redirect(url_for("login.sign_in"))
     defaults = db.select(conn, {"": ['defaults']}, "*", {"T1": {'aid': aid}})
@@ -24,7 +24,7 @@ def own_defaults():
 @defaults.route('/adding_defaults', methods=['GET', 'POST'])
 def adding_defaults():
     try:
-        aid = session['aid']
+        aid = request.cookies.get('aid')
     except:
         return redirect(url_for("login.sign_in"))
     return render_template("/defaults/AddingDefaults.html")
@@ -33,7 +33,7 @@ def adding_defaults():
 @defaults.route('/add_defaults', methods=['GET', 'POST'])
 def add_defaults():
     try:
-        aid = session['aid']
+        aid = request.cookies.get('aid')
     except:
         return redirect(url_for("login.sign_in"))
     default = {'aid': aid, 'name': request.form.get("name"), 'be_from': request.form.get("be_from"), 'be_to': request.form.get("be_to"),
@@ -52,7 +52,7 @@ def add_defaults():
 @defaults.route('/delete_defaults', methods=['GET', 'POST'])
 def delete_defaults():
     try:
-        aid = session['aid']
+        aid = request.cookies.get('aid')
     except:
         return redirect(url_for("login.sign_in"))
     db.delete(conn, 'defaults', {'did': request.form.get('did')})

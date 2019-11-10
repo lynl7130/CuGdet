@@ -16,8 +16,10 @@ def sign_in():
     data = {"T1": {'name': request.form.get("username"), 'pwd': request.form.get("password")}}
     res = db.select(conn, {'': ['Account']}, {"T1": ['aid']}, data)
     if len(res) != 0:
-        session['aid'] = res[0]['aid']
-        return redirect(url_for('homepage.all_records'))
+
+        resp = make_response(redirect(url_for("homepage.all_records")))
+        resp.set_cookie(key = 'aid', value = res[0]['aid'], expires = None)
+        return resp
     else:
         return render_template('/login/SignIn.html', msg = "error user name or password")
 
