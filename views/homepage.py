@@ -1,7 +1,7 @@
 import random
 import string
 
-from main import app, conn
+from main import conn
 from flask import request, redirect, session, url_for, render_template, Blueprint
 
 from db import db
@@ -12,7 +12,7 @@ letters = [s for s in string.ascii_lowercase]
 numbers = [str(i) for i in range(10)]
 
 
-@app.route('/all_records', methods=['GET', 'POST'])
+@homepage.route('/all_records', methods=['GET', 'POST'])
 def records():
     try:
         aid = request.cookies.get('aid')
@@ -22,7 +22,7 @@ def records():
     return render_template("HomePage.html", records = records)
 
 
-@app.route('/adding_record', methods=['GET', 'POST'])
+@homepage.route('/adding_record', methods=['GET', 'POST'])
 def add_record():
     try:
         aid = request.cookies.get('aid')
@@ -31,7 +31,7 @@ def add_record():
     return render_template("AddingRecord.html")
 
 
-@app.route('/add_record', methods=['GET', 'POST'])
+@homepage.route('/add_record', methods=['GET', 'POST'])
 def add_record():
     try:
         aid = request.cookies.get('aid')

@@ -17,7 +17,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 conn = db.connect(name = "proj1part2", usr = "yl4323", host = "35.243.220.243", pwd = "2262")
 
 
-app.register_blueprint(homepage, url_prefix='/admin')
+app.register_blueprint(homepage, url_prefix='/homepage')
 app.register_blueprint(login, url_prefix='/login')
 app.register_blueprint(plans, url_prefix='/plans')
 app.register_blueprint(stat, url_prefix='/stat')

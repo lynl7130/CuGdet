@@ -2,7 +2,7 @@ import random
 import string
 
 from db import db
-from main import app, conn
+from main import conn
 from flask import request, redirect, session, url_for, render_template, make_response, Blueprint
 
 
@@ -11,7 +11,7 @@ letters = [s for s in string.ascii_lowercase]
 numbers = [str(i) for i in range(10)]
 
 
-@app.route('/own_plans', methods=['GET', 'POST'])
+@plans.route('/own_plans', methods=['GET', 'POST'])
 def own_plans():
     try:
         aid = request.cookies.get('aid')
@@ -21,7 +21,7 @@ def own_plans():
     return render_template("OwnPlans", plans = plans)
 
 
-@app.route('/adding_plans', methods=['GET', 'POST'])
+@plans.route('/adding_plans', methods=['GET', 'POST'])
 def adding_plans():
     try:
         aid = request.cookies.get('aid')
@@ -30,7 +30,7 @@ def adding_plans():
     return render_template("AddingPlan.html")
 
 
-@app.route('/add_plans', methods=['GET', 'POST'])
+@plans.route('/add_plans', methods=['GET', 'POST'])
 def add_plans():
     try:
         aid = request.cookies.get('aid')
@@ -49,7 +49,7 @@ def add_plans():
     return redirect("own_plans")
 
 
-@app.route('/delete_plans', methods=['GET', 'POST'])
+@plans.route('/delete_plans', methods=['GET', 'POST'])
 def delete_plans():
     try:
         aid = request.cookies.get('aid')

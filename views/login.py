@@ -2,7 +2,7 @@ import random
 import string
 
 from db import db
-from main import app, conn
+from main import conn
 from flask import request, redirect, session, url_for, render_template, make_response, Blueprint
 
 
@@ -11,7 +11,7 @@ letters = [s for s in string.ascii_lowercase]
 numbers = [str(i) for i in range(10)]
 
 
-@app.route('/signin', methods=['GET', 'POST'])
+@login.route('/signin', methods=['GET', 'POST'])
 def login():
     data = {"T1": {'username': request.form.get("username"), 'password': request.form.get("password")}}
     res = db.select(conn, {'': ['Account']}, {"T1": ['aid']}, data)
@@ -23,12 +23,12 @@ def login():
         return render_template('SignIn.html', msg = "error user name or password")
 
 
-@app.route('/tosignup', methods=['GET', 'POST'])
+@login.route('/tosignup', methods=['GET', 'POST'])
 def to_sign_up():
     return render_template('SignUp.html')
 
 
-@app.route('/signup', methods=['GET', 'POST'])
+@login.route('/signup', methods=['GET', 'POST'])
 def sign_up():
     data = {'username': request.form.get("username"), 'password': request.form.get("password"),
             'email': request.form.get("email")}
