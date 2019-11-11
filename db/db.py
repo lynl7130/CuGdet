@@ -24,7 +24,11 @@ def select(conn, tables, columns, condition, special = ""):
         sql = """SELECT %s FROM %s WHERE %s %s;""" % (
             columns_to_sql(columns), tables_to_sql(tables), cond_sql, special)
     print(sql)
-    cur.execute(sql)
+    try:
+        cur.execute(sql)
+        conn.commit()
+    except:
+        conn.rollback()
     return cur.fetchall()
 
 
@@ -39,8 +43,11 @@ def insert(conn, table, data):
 
     sql = "INSERT INTO %s %s VALUES %s;" % (table, cols, vals)
     print(sql)
-    cur.execute(sql)
-    conn.commit()
+    try:
+        cur.execute(sql)
+        conn.commit()
+    except:
+        conn.rollback()
 
 
 def delete(conn, table, condition):
@@ -48,8 +55,11 @@ def delete(conn, table, condition):
 
     sql = "DELETE FROM %s WHERE %s;" % (tables_to_sql({"": [table]}), condition_to_sql({"T1": condition}))
     print(sql)
-    cur.execute(sql)
-    conn.commit()
+    try:
+        cur.execute(sql)
+        conn.commit()
+    except:
+        conn.rollback()
 
 
 def update(conn, table, new_values, condition):
@@ -62,13 +72,20 @@ def update(conn, table, new_values, condition):
     cond = " AND ".join(cond)
     sql = "UPDATE %s SET %s WHERE %s;" % (table, vals, cond)
     print(sql)
-    cur.execute(sql)
-    conn.commit()
+    try:
+        cur.execute(sql)
+        conn.commit()
+    except:
+        conn.rollback()
 
 
 def special_select(sql):
     cur = conn.cursor(cursor_factory = RealDictCursor)
-    cur.execute(sql)
+    try:
+        cur.execute(sql)
+        conn.commit()
+    except:
+        conn.rollback()
     return cur.fetchall()
 
 

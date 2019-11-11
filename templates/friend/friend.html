@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Honors
+Friends
 {% endblock %}
 
 {% block MainContainer %}
     <div class="container">
         <div class="col-lg-8">
-            {% for honor in honors%}
+            {% for friend in friends%}
             <table class="table">
               <tbody>
                 <tr>
-                  <td>{{honor['name']}}</td>
+                  <td>{{friend['name']}}</td>
                 </tr>
               </tbody>
             </table>
