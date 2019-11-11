@@ -9,6 +9,8 @@ from views.plans import plans
 from views.stat import stat
 from views.stocks import stocks
 from views.honors import honors
+from views.friend import friend
+from views.races import races
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
@@ -21,6 +23,8 @@ app.register_blueprint(stat)
 app.register_blueprint(stocks)
 app.register_blueprint(defaults)
 app.register_blueprint(honors)
+app.register_blueprint(friend)
+app.register_blueprint(races)
 
 @app.route('/')
 def index():
