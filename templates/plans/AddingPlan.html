@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Adding Plan
+{% endblock %}
+
+{% block MainContainer %}
+    <div class="container">
+        <div class="col-lg-8">
+            <form action="/add_plans" method="post">
+                Starting from: <input name="starting" type="text"><br>
+                Ending from: <input name="ending" type="text"><br>
+                Cycle: <input name="cycle" type="text"><br>
+                Budget: <input name="budget" type="text"><br>
+                <button type="submit">Add</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

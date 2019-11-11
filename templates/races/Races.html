@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Races
+{% endblock %}
+
+{% block MainContainer %}
+    <div class="container">
+        <div class="col-lg-8">
+            {% for race in races%}
+            <table class="table">
+              <tbody>
+                <tr>
+                    <td>{{race['tname']}}</td>
+                    <td>{{race['name']}}</td>
+                </tr>
+              </tbody>
+            </table>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}</html>

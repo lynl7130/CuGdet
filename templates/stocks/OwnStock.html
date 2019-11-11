@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Owned Stocks
+{% endblock %}
+
+{% block MainContainer %}
+    <div class="container" style="height: 100px;">
+        <div class="col-lg-10" style="background-color: red;  height: 100%">
+            {% for stock in own_stocks%}
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>Symbol</td>
+                  <td>{{stock['sid']}}</td>
+                </tr>
+                <tr>
+                  <td>Name</td>
+                  <td>{{stock['name']}}</td>
+                </tr>
+                <tr>
+                  <td>Price</td>
+                  <td>{{stock['old_price']}}</td>
+                </tr>
+                <tr>
+                  <td>Current Price</td>
+                  <td>{{stock['cur_price']}}</td>
+                </tr>
+                <tr>
+                  <td>Number</td>
+                  <td>{{stock['num']}}</td>
+                </tr>
+                <tr>
+                  <td>Sell</td>
+                  <td>
+                      <form action="/sell_stock" method="post">
+                          <input name="sid" type="hidden" value={{stock['sid']}}>
+                          <input name="old_price" type="hidden" value={{stock['old_price']}}>
+                          <input name="cur_price" type="hidden" value={{stock['cur_price']}}>
+                          <input name="num" type="hidden" value={{stock['num']}}>
+                          number: <input name="sell_num" type="text">
+                          <button id="submit" type="submit">sell</button>
+                      </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

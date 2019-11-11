@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Owned Plans
+{% endblock %}
+
+{% block MainContainer %}
+    <div class="container">
+        <div class="col-lg-8">
+            <form action="/adding_plan" method="post">
+                Adding a new plan
+                <button type="submit">Add</button>
+            </form>
+        </div>
+        <div class="col-lg-8">
+            {% for plan in plans%}
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>Start at</td>
+                  <td>{{plan['starting']}}</td>
+                </tr>
+                <tr>
+                  <td>End at</td>
+                  <td>{{plan['ending']}}</td>
+                </tr>
+                <tr>
+                  <td>Cycle</td>
+                  <td>{{plan['cycle']}}</td>
+                </tr>
+                <tr>
+                  <td>Credit</td>
+                  <td>{{plan['credit']}}</td>
+                </tr>
+                <tr>
+                  <td>Budget</td>
+                  <td>{{plan['budget']}}</td>
+                </tr>
+                <tr>
+                  <td>Delete</td>
+                  <td>
+                      <form action="/delete_plans" method="post">
+                          <input name="pid" type="hidden" value={{plan['pid']}}>
+                          <button id="submit" type="submit">Delete</button>
+                      </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

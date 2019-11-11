@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Stocks Markets
+{% endblock %}
+
+{% block MainContainer %}
+    <div class="container">
+        <div class="col-lg-8">
+            {% for stock in all_stocks%}
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>Symbol</td>
+                  <td>{{stock['sid']}}</td>
+                </tr>
+                <tr>
+                  <td>Name</td>
+                  <td>{{stock['name']}}</td>
+                </tr>
+                <tr>
+                  <td>Price</td>
+                  <td>{{stock['price']}}</td>
+                </tr>
+                <tr>
+                  <td>Buy</td>
+                  <td>
+                      <form action="/buy_stock" method="post">
+                          <input name="sid" type="hidden" value={{stock['sid']}}>
+                          <input name="price" type="hidden" value={{stock['price']}}>
+                          number: <input name="num" type="text">
+                          <button id="submit" type="submit">buy</button>
+                      </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

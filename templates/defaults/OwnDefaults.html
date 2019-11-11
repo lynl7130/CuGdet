@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Owned Defaults
+{% endblock %}
+
+{% block MainContainer %}
+    <div class="container">
+        <div class="col-lg-8">
+            <form action="/adding_defaults" method="post">
+                Adding a new defaults
+                <button type="submit">Add</button>
+            </form>
+        </div>
+        <div class="col-lg-8">
+            {% for default in defaults%}
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>Name</td>
+                  <td>{{default['name']}}</td>
+                </tr>
+                <tr>
+                  <td>Source</td>
+                  <td>{{default['be_from']}}</td>
+                </tr>
+                <tr>
+                  <td>Receive</td>
+                  <td>{{default['be_to']}}</td>
+                </tr>
+                <tr>
+                  <td>Start at</td>
+                  <td>{{default['starting']}}</td>
+                </tr>
+                <tr>
+                  <td>End at</td>
+                  <td>{{default['ending']}}</td>
+                </tr>
+                <tr>
+                  <td>Cycle</td>
+                  <td>{{default['cycle']}}</td>
+                </tr>
+                <tr>
+                  <td>Amount</td>
+                  <td>{{default['amt']}}</td>
+                </tr>
+                <tr>
+                  <td>Remark</td>
+                  <td>{{default['remark']}}</td>
+                </tr>
+                <tr>
+                  <td>Tag</td>
+                  <td>{{default['tag']}}</td>
+                </tr>
+                <tr>
+                  <td>Delete</td>
+                  <td>
+                      <form action="/delete_defaults" method="post">
+                          <input name="did" type="hidden" value={{default['did']}}>
+                          <button id="submit" type="submit">Delete</button>
+                      </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

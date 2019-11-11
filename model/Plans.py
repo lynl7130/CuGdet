@@ -1,4 +1,9 @@
-class Plans:
+from model.BaseEntity import BaseEntity
+
+
+class Plans(BaseEntity):
+    table = "plans"
+
     def __init__(self, data):
         self.pid = data['pid']
         self.starting = data['starting']

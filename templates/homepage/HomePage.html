@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home Page
+{% endblock %}
+
+{% block MainContainer %}
+    <div class="container">
+        <div class="col-lg-8">
+            <form action="/adding_record" method="post">
+                Adding a new record
+                <button type="submit">Add</button>
+            </form>
+        </div>
+        <div class="col-lg-8">
+            {% for record in records%}
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>Name</td>
+                  <td>{{record['name']}}</td>
+                </tr>
+                <tr>
+                  <td>Source</td>
+                  <td>{{record['be_from']}}</td>
+                </tr>
+                <tr>
+                  <td>Receiver</td>
+                  <td>{{record['be_to']}}</td>
+                </tr>
+                <tr>
+                  <td>Amount</td>
+                  <td>{{record['amt']}}</td>
+                </tr>
+                <tr>
+                  <td>Tag</td>
+                  <td>{{record['tag']}}</td>
+                </tr>
+                <tr>
+                  <td>Time</td>
+                  <td>{{record['time']}}</td>
+                </tr>
+                <tr>
+                  <td>Remark</td>
+                  <td>{{record['remark']}}</td>
+                </tr>
+              </tbody>
+            </table>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

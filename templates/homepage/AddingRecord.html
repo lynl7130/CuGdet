@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Adding Record
+{% endblock %}
+
+{% block MainContainer %}
+    <div class="container">
+        <div class="col-lg-8">
+            <form action="/add_record" method="post">
+                Name: <input name="name" type="text"><br>
+                Source: <input name="be_from" type="text"><br>
+                Receiver: <input name="be_to" type="text"><br>
+                Amount: <input name="amt" type="text"><br>
+                Tag: <input name="tag" type="text"><br>
+                Time: <input name="time" type="text"><br>
+                Remark: <input name="remark" type="text"><br>
+                <button type="submit">Add</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

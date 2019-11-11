@@ -1,4 +1,9 @@
-class StockHistory:
+from model.BaseEntity import BaseEntity
+
+
+class StockHistory(BaseEntity):
+    table = "stock_history"
+
     def __init__(self, data):
         self.spid = data['spid']
         self.time = data['time']
